@@ -10,8 +10,8 @@ A Bijira API mediation policy that enforces consent validation on every inbound 
 Incoming request
       │
       ▼
-Extract Bearer token from Authorization header
-      │
+Extract token: X-JWT-Assertion header (primary, set by Bijira gateway)
+      │  or Authorization: Bearer <token> (fallback for direct calls)
       ▼
 Decode JWT → read consent_id claim
       │
@@ -39,7 +39,9 @@ The policy runs on the **request flow** only. Response and fault flows are pass-
 
 ## JWT Requirements
 
-The caller's `Authorization` header must contain a Bearer JWT with a `consent_id` claim in its payload:
+The policy reads the token from the `X-JWT-Assertion` header when present (set automatically by the Bijira/WSO2 APIM gateway). For direct calls that bypass the gateway, it falls back to the `Authorization: Bearer <token>` header.
+
+The JWT must contain a `consent_id` claim in its payload:
 
 ```json
 {
@@ -122,5 +124,5 @@ BAL_CONFIG_DATA={"ballerina":{"log":{"level":"DEBUG"}}}
 |---|---|
 | Org | `wso2healthcare` |
 | Name | `consentEnforcePolicy` |
-| Version | `1.0.0` |
-| Distribution | Ballerina `2201.5.5` |
+| Version | `1.0.4` |
+| Distribution | Ballerina `2201.12.8` |
